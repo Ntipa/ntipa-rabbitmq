@@ -5,9 +5,9 @@ MAINTAINER Tindaro Tornabene <tindaro.tornabene@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 
 
-ADD rabbitmq-signing-key-public.asc /tmp/rabbitmq-signing-key-public.asc
-RUN apt-key add /tmp/rabbitmq-signing-key-public.asc
-
+#ADD rabbitmq-signing-key-public.asc /tmp/rabbitmq-signing-key-public.asc
+#RUN apt-key add /tmp/rabbitmq-signing-key-public.asc
+RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys F78372A06FF50C80464FC1B4F7B8CEA6056E8E56
 RUN echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list
 RUN apt-get -y update
 
@@ -19,6 +19,7 @@ RUN apt-get install -yqq inetutils-ping net-tools rabbitmq-server
 RUN /usr/sbin/rabbitmq-plugins enable rabbitmq_management
 RUN /usr/sbin/rabbitmq-plugins enable enable rabbitmq_stomp
 RUN /usr/sbin/rabbitmq-plugins enable enable rabbitmq_shovel
+RUN /usr/sbin/rabbitmq-plugins enable enable rabbitmq_mqtt
 RUN echo "[{rabbit, [{loopback_users, []}]}]." > /etc/rabbitmq/rabbitmq.config
 
 
@@ -46,6 +47,6 @@ RUN chmod +x /usr/local/bin/rabbitmq-start
 
 USER root
 
-EXPOSE 5672 15672 4369 61613 25672 4369
+EXPOSE 5672 15672 4369 61613 25672 4369 1883
 
 CMD ["/usr/local/bin/rabbitmq-start"]
